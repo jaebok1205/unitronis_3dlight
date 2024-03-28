@@ -1,0 +1,167 @@
+
+<!-- saved from url=(0042)https://dev.unitronis.com/3DTest_KCar.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="./3DTest_KCar_files/kcar.css">
+</head>
+<body>
+  <br>
+<!--
+  <h1 style="text-align: center;">[UnitronIS]</h1>
+  <h2 style="text-align: center;">Test 3D Viewer</h2>
+-->
+<div class="container">
+    <div class="wrapper">
+      <div class="carousel">
+        <!--
+        <button type="button" id="carousel-arrow-prev" class="carousel-arrow carousel-arrow-prev" onclick="carouselSwipePrev()" arial-label="Image"></button>
+        <button type="button" id="carousel-arrow-next" class="carousel-arrow carousel-arrow-next" onclick="carouselSwipeNext()" arial-label="Image"></button>
+        -->
+        <img id="carousel-0" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/000.jpg">
+        <img id="carousel-1" class="carousel-img carousel-img-displayed" src="./3DTest_KCar_files/001.jpg">
+        <img id="carousel-2" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/002.jpg">
+        <img id="carousel-3" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/003.jpg">
+        <img id="carousel-4" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/004.jpg">
+        <img id="carousel-5" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/005.jpg">
+        <img id="carousel-6" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/006.jpg">
+        <img id="carousel-7" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/007.jpg">
+        <img id="carousel-8" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/008.jpg">
+        <img id="carousel-9" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/009.jpg">
+        <img id="carousel-10" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/010.jpg">
+        <img id="carousel-11" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/011.jpg">
+        <img id="carousel-12" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/012.jpg">
+        <img id="carousel-13" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/013.jpg">
+        <img id="carousel-14" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/014.jpg">
+        <img id="carousel-15" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/015.jpg">
+        <img id="carousel-16" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/016.jpg">
+        <img id="carousel-17" class="carousel-img carousel-img-noDisplay" src="./3DTest_KCar_files/017.jpg">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let bPointerDown = false;
+    let nStartX = 0;
+    let nEndX = 0;
+    let fImageScaleOrg = 1.0;
+    let fImageScaleCurr = 0.0;
+    let fImageScaleCSS = 0.0;
+    let fImageScale = 0.0;
+
+    const container = document.querySelector('.carousel');
+
+    container.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      bPointerDown = true;
+      nStartX = e.pageX;
+    });
+
+    container.addEventListener('mousemove', (e) => {
+      e.preventDefault();
+      if (!bPointerDown) return false;
+      nEndX = e.pageX;
+      createDraggingEffects();
+    });
+
+    container.addEventListener('mouseup', (e) => {
+      e.preventDefault();
+      bPointerDown = false;
+    });
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY < 0) { // 확대
+        fImageScale = fImageScale + 0.1;
+        fImageScaleCurr = fImageScaleOrg + fImageScale;
+        fImageScaleCSS = "scale(" + fImageScaleCurr + ")";
+        for(var n=0; n< document.getElementsByClassName('carousel-img').length; n++) {
+          document.getElementsByClassName('carousel-img')[n].style.transform = fImageScaleCSS;
+        }
+      }
+      else { // 축소
+        fImageScale = fImageScale - 0.1;
+        fImageScaleCurr = fImageScaleOrg + fImageScale;
+        if (fImageScaleCurr < 1.0) {
+          fImageScaleCurr = 1.0;
+          fImageScale = 0.0;
+        }
+        fImageScaleCSS = "scale(" + fImageScaleCurr + ")";
+        for (var n = 0; n < document.getElementsByClassName('carousel-img').length; n++) {
+          document.getElementsByClassName('carousel-img')[n].style.transform = fImageScaleCSS;
+        }
+      }
+    });
+
+    function createDraggingEffects() {
+      //var nMaxDistance = 0.01;
+      //var nScrolledDistance = (nStartX - nEndX) / nMaxDistance;
+      var nScale = 2;
+			var nScrolledDistance = (nStartX - nEndX)/10;
+
+      if (nScrolledDistance >= nScale) {
+//			if (nScrolledDistance >= 0) {
+//        carouselSwipeNext();
+        carouselSwipePrev();
+				nStartX = nEndX;
+      }
+      else if (nScrolledDistance < -nScale) {
+//			else if (nScrolledDistance < 0) {
+//				carouselSwipePrev();
+				carouselSwipeNext();
+				nStartX = nEndX;
+      }
+    }
+
+    function carouselSwipeNext() {
+      var currentImg = document.getElementsByClassName('carousel-img-displayed')[0].id.substring(9);
+      var newImg = parseInt(currentImg);
+
+      newImg++;
+      if (newImg >= document.getElementsByClassName('carousel-img').length) {
+        newImg = 0;
+      }
+
+      document.getElementById('carousel-' + currentImg).className = 'carousel-img carousel-img-hidden';
+
+      var displayedCarousel = document.getElementById('carousel-' + newImg);
+
+      displayedCarousel.className = 'carousel-img carousel-img-hidden';
+
+      setTimeout(function () {
+        displayedCarousel.className = 'carousel-img carousel-img-displayed';
+      }, 1);
+
+      setTimeout(function () {
+        document.getElementById('carousel-' + currentImg).className = 'carousel-img carousel-img-noDisplay';
+      }, 1);
+    }
+
+    function carouselSwipePrev() {
+      var currentImg = document.getElementsByClassName('carousel-img-displayed')[0].id.substring(9);
+      var newImg = parseInt(currentImg);
+
+      newImg--;
+      if (newImg < 0) {
+        newImg = document.getElementsByClassName('carousel-img').length - 1;
+      }
+
+      document.getElementById('carousel-' + currentImg).className = 'carousel-img carousel-img-hidden';
+
+      var displayedCarousel = document.getElementById('carousel-' + newImg);
+
+      displayedCarousel.className = 'carousel-img carousel-img-hidden';
+
+      setTimeout(function () {
+        displayedCarousel.className = 'carousel-img carousel-img-displayed';
+      }, 1);
+
+      setTimeout(function () {
+        document.getElementById('carousel-' + currentImg).className = 'carousel-img carousel-img-noDisplay';
+      }, 1);
+    }
+  </script>
+
+
+</body></html>
